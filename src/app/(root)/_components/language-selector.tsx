@@ -26,7 +26,6 @@ export default function LanguageSelector({
         dropDownRef.current &&
         !dropDownRef.current.contains(e.target as Node)
       ) {
-        console.log(isOpen);
         setIsOpen(false);
       }
     };

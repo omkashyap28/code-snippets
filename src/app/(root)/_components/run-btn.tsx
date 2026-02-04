@@ -9,16 +9,14 @@ import { api } from "../../../../convex/_generated/api";
 
 export default function RunButton() {
   const { user } = useUser();
+  const runCode = useEditorStore((state) => state.runCode);
   const language = useEditorStore((state) => state.language);
   const isRunning = useEditorStore((state) => state.isRunning);
-  const runCode = useEditorStore((state) => state.runCode);
-  const saveExecution = useMutation(api.codeExecution.saveExecution);
-
+  const saveExecution = useMutation(api.codeExecutions.saveExecution);
   const handleRun = async () => {
     await runCode();
     const result = getExecutionResult();
     if (user && result) {
-      // todo: save data in convex
       await saveExecution({
         language,
         code: result.code,
