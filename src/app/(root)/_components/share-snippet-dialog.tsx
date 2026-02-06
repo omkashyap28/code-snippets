@@ -5,6 +5,7 @@ import { useMutation } from "convex/react";
 import { useState } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { X } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function ShareSnippetDialog({
   onClose,
@@ -28,10 +29,14 @@ export default function ShareSnippetDialog({
       });
       onClose();
       setTitle("");
-      // toast.sucess("Snippet saved sucessfully");
+      toast.success("Snippet saved sucessfully", {
+        duration: 4000,
+      });
     } catch (error) {
       console.error("Error in snipet save ", error);
-      // toast.error("Error in saving snippet");
+      toast.error("Error in saving snippet", {
+        duration: 4000,
+      });
     } finally {
       setIsSharing(false);
     }
@@ -60,6 +65,7 @@ export default function ShareSnippetDialog({
               className="w-full px-3 py-2 bg-[#181825] border border-[#313244] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter snippet title"
               required
+              autoFocus
             />
             <div className="flex gap-3 justify-end mt-4">
               <button

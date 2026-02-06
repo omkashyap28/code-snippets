@@ -11,28 +11,25 @@ import { useEffect, useState } from "react";
 import { EditorPanelSkeleton } from "./editor-panel-skeleton";
 import useMounted from "@/hooks/useMounted";
 import ShareSnippetDialog from "./share-snippet-dialog";
+import SettingDialogueBox from "./settings-dialoge-box";
 
 export default function EditorPanel() {
   const clerk = useClerk();
+
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const mounted = useMounted();
   const language = useEditorStore((state) => state.language);
   const fontSize = useEditorStore((state) => state.fontSize);
+  const wordWrap = useEditorStore((state) => state.wordWrap);
   const theme = useEditorStore((state) => state.theme);
   const editor = useEditorStore((state) => state.editor);
   const setEditor = useEditorStore((state) => state.setEditor);
-  const setFontSize = useEditorStore((state) => state.setFontSize);
 
   useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
     const newCode = savedCode || LANGUAGE_CONFIG[language].defaultCode;
     if (editor) editor.setValue(newCode);
   }, [language, editor]);
-
-  useEffect(() => {
-    const savedFontSize = localStorage.getItem("editor-font-size");
-    if (savedFontSize) setFontSize(parseInt(savedFontSize));
-  }, [setFontSize]);
 
   const handleRefresh = () => {
     const defaultCode = LANGUAGE_CONFIG[language].defaultCode;
@@ -44,15 +41,9 @@ export default function EditorPanel() {
     if (value) localStorage.setItem(`editor-code-${language}`, value);
   };
 
-  const handleFontSizeChange = (newSize: number) => {
-    const size = Math.min(Math.max(newSize, 12), 24);
-    setFontSize(size);
-    localStorage.setItem("editor-fontsize", size.toString());
-  };
-
   if (!mounted) return null;
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/5 p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
@@ -74,24 +65,6 @@ export default function EditorPanel() {
           </div>
           <div className="flex items-center gap-3">
             {/* Font Size Slider */}
-            <div className="flex items-center gap-3 px-3 py-2 bg-[#1e1e2e] rounded-lg ring-1 ring-white/5">
-              <TypeIcon className="size-4 text-gray-400" />
-              <div className="flex items-center gap-3">
-                <input
-                  type="range"
-                  min="12"
-                  max="24"
-                  value={fontSize}
-                  onChange={(e) =>
-                    handleFontSizeChange(parseInt(e.target.value))
-                  }
-                  className="w-20 h-1 bg-gray-600 rounded-lg cursor-pointer"
-                />
-                <span className="text-sm font-medium text-gray-400 min-w-8 text-center">
-                  {fontSize}
-                </span>
-              </div>
-            </div>
 
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -102,6 +75,7 @@ export default function EditorPanel() {
             >
               <RotateCcwIcon className="size-4 text-gray-400" />
             </motion.button>
+            <SettingDialogueBox />
 
             {/* Share Button */}
             <motion.button
@@ -118,10 +92,10 @@ export default function EditorPanel() {
         </div>
 
         {/* Editor  */}
-        <div className="relative group rounded-xl overflow-hidden ring-1 ring-white/5">
+        <div className="relative h-[70vh] group rounded-xl overflow-hidden ring-1 ring-white/5">
           {clerk.loaded && (
             <Editor
-              height="450px"
+              height={"100%"}
               language={LANGUAGE_CONFIG[language].monacoLanguage}
               onChange={handleEditorChange}
               theme={theme}
@@ -130,6 +104,7 @@ export default function EditorPanel() {
               options={{
                 minimap: { enabled: false },
                 fontSize,
+                wordWrap,
                 automaticLayout: true,
                 scrollBeyondLastLine: false,
                 padding: { top: 16, bottom: 16 },

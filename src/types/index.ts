@@ -36,7 +36,6 @@ export interface ExecutionResult {
   output: string;
   error: string | null;
 }
-
 export interface CodeEditorState {
   language: string;
   output: string;
@@ -44,6 +43,7 @@ export interface CodeEditorState {
   error: string | null;
   theme: string;
   fontSize: number;
+  wordWrap: "on" | "off";
   editor: Monaco | null;
   executionResult: ExecutionResult | null;
 
@@ -53,6 +53,7 @@ export interface CodeEditorState {
   setTheme: (theme: string) => void;
   setFontSize: (fontSize: number) => void;
   runCode: () => Promise<void>;
+  setWordWrap: (wordWrap: "on" | "off") => void;
 }
 
 export interface Snippet {

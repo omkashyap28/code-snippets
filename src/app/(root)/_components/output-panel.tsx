@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useEditorStore } from "@/store/useEditorStore";
-// import { OutputPanelSkeleton } from "./editor-panel-skeleton";
+// import { EditorPanelSkeleton } from "./editor-panel-skeleton";
 import RunningCodeSkeleton from "./running-code-skeleton";
 
 export default function OutputPanel() {
@@ -30,7 +30,7 @@ export default function OutputPanel() {
   };
 
   return (
-    <div className="relative bg-[#181825] rounded-xl p-4 ring-1 ring-gray-800/50">
+    <div className="relative w-full bg-[#181825] rounded-xl p-4 ring-1 ring-gray-800/50">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 mt-1">
         <div className="flex items-center gap-2">
@@ -62,10 +62,10 @@ export default function OutputPanel() {
       </div>
 
       {/* Output Area */}
-      <div className="relative">
+      <div className="relative h-[70vh]">
         <div
           className="relative bg-[#1e1e2e]/50 backdrop-blur-sm border border-[#313244] 
-        rounded-xl p-4 h-112.5 overflow-auto font-mono text-sm"
+        rounded-xl p-4 h-full overflow-auto font-mono text-sm"
         >
           {isRunning ? (
             <RunningCodeSkeleton />

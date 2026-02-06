@@ -1,0 +1,123 @@
+"use client";
+
+import { useQuery } from "convex/react";
+import { useParams } from "next/navigation";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import SnippetLoadingSkeleton from "./_components/snippet-loading-skeleton";
+import Image from "next/image";
+import { Clock, Edit, MessageSquare, User } from "lucide-react";
+import { defineMonacoThemes, LANGUAGE_CONFIG } from "@/constants";
+import { Editor } from "@monaco-editor/react";
+import CopyBtn from "./_components/copy-btn";
+import { useEditorStore } from "@/store/useEditorStore";
+import { useState } from "react";
+import Comments from "./_components/comments";
+import { useUser } from "@clerk/nextjs";
+import toast from "react-hot-toast";
+
+export default function SnippetsDetailsPage() {
+  const { user } = useUser();
+
+  const snippetId = useParams().id;
+  const theme = useEditorStore((state) => state.theme);
+
+  const [isEditable, setIsEditable] = useState<boolean | undefined>(true);
+
+  const snippet = useQuery(api.snippets.getSippetById, {
+    snippetId: snippetId as Id<"snippets">,
+  });
+  const comments = useQuery(api.snippets.getSnippetsComments, {
+    snippetId: snippetId as Id<"snippets">,
+  });
+
+  const handleIsEditable = () => {
+    if (user) {
+      setIsEditable((state) => !state);
+    } else {
+      toast.error("Login required");
+    }
+  };
+
+  if (snippet === undefined) return <SnippetLoadingSkeleton />;
+
+  return (
+    <main className="max-w-360 mx-auto px-5 py-4">
+      <div className="max-w-300 mx-auto">
+        {/* Code Editor */}
+        <div className="mb-8 rounded-2xl overflow-hidden border border-[#ffffff0a] bg-[#121218]">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#ffffff0a]">
+            <div className="flex items-center gap-2 text-[#808086]">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center size-12 rounded-xl bg-[#ffffff08] p-2.5">
+                  <Image
+                    src={`/${snippet.language}.png`}
+                    alt={`${snippet.language} logo`}
+                    height={48}
+                    width={48}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-xl font-semibold text-white mb-1">
+                    {snippet.title}
+                  </h1>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                    <div className="flex items-center gap-1 text-[#8b8b8d]">
+                      <User className="w-4 h-4" />
+                      <span>{snippet.userName}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[#8b8b8d]">
+                      <Clock className="w-4 h-4" />
+                      <span>
+                        {new Date(snippet._creationTime).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[#8b8b8d]">
+                      <MessageSquare className="w-4 h-4" />
+                      <span>{comments?.length} comments</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 items-center">
+              <button
+                onClick={handleIsEditable}
+                className="flex items-center gap-1.5 p-2 text-xs text-gray-400 hover:text-gray-300 bg-[#1e1e2e] 
+                  rounded-lg ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all"
+              >
+                <Edit className="size-4" />
+              </button>
+              <CopyBtn code={snippet.code} />
+            </div>
+          </div>
+          <Editor
+            height="68vh"
+            language={LANGUAGE_CONFIG[snippet.language].monacoLanguage}
+            value={snippet.code}
+            theme={theme}
+            beforeMount={defineMonacoThemes}
+            options={{
+              minimap: { enabled: false },
+              fontSize: 16,
+              readOnly: isEditable,
+              automaticLayout: true,
+              scrollBeyondLastLine: false,
+              padding: { top: 16 },
+              renderWhitespace: "selection",
+              fontFamily: '"Fira Code", "Cascadia Code", Consolas, monospace',
+              fontLigatures: true,
+              scrollbar: {
+                verticalScrollbarSize: 8,
+                horizontalScrollbarSize: 8,
+              },
+            }}
+          />
+        </div>
+
+        <Comments snippetId={snippet._id} />
+      </div>
+    </main>
+  );
+}

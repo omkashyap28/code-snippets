@@ -9,13 +9,15 @@ const getInitialState = () => {
       language: "javascript",
       theme: "vs-dark",
       fontSize: 16,
+      wordWrap: "on" as "on" | "off",
     };
   }
-
+  const savedWordWrap = localStorage.getItem("wordWrap");
   return {
     language: localStorage.getItem("editor-language") || "javascript",
     theme: localStorage.getItem("editor-theme") || "vs-dark",
     fontSize: Number(localStorage.getItem("editor-fontsize") || 16),
+    wordWrap: savedWordWrap === "on" ? "on" : ("off" as "on" | "off"),
   };
 };
 
@@ -47,6 +49,10 @@ export const useEditorStore = create<CodeEditorState>((set, get) => ({
     set({ fontSize });
   },
 
+  setWordWrap: (wordWrap) => {
+    localStorage.setItem("wordWrap", wordWrap);
+    set({ wordWrap });
+  },
   setLanguage: (language) => {
     const currentCode = get().editor?.getValue();
 

@@ -16,13 +16,12 @@ export default async function Header() {
   const convexUser = await convex.query(api.users.getUser, {
     userId: user?.id || "",
   });
-  console.log(convexUser);
 
   return (
     <div className="relative z-10">
       <div
         className="flex items-center lg:justify-between justify-center 
-      bg-[#0a0a0f]/80 backdrop-blur-xl px-6 py-3 mb-4 rounded-lg"
+      bg-[#0a0a0f]/80 backdrop-blur-xl px-4 sm:px-6 py-3 mb-4 rounded-lg"
       >
         <div className="hidden lg:flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group relative">
@@ -65,7 +64,7 @@ export default async function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center max-sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <ThemeSelector />
             <LanguageSelector hasAccess={Boolean(convexUser?.isPro)} />
