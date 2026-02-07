@@ -1,17 +1,19 @@
 "use client";
-
-import { defineMonacoThemes, LANGUAGE_CONFIG } from "@/constants";
+import { LANGUAGE_CONFIG, defineMonacoThemes } from "@/constants";
 import { useEditorStore } from "@/store/useEditorStore";
 import { useClerk } from "@clerk/nextjs";
 import { Editor } from "@monaco-editor/react";
-import { RotateCcwIcon, ShareIcon, TypeIcon } from "lucide-react";
+import { RotateCcwIcon } from "lucide-react";
 import { motion } from "motion/react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { EditorPanelSkeleton } from "./editor-panel-skeleton";
 import useMounted from "@/hooks/useMounted";
-import ShareSnippetDialog from "./share-snippet-dialog";
-import SettingDialogueBox from "./settings-dialoge-box";
+import ShareSnippetDialog from "../app/(root)/_components/share-snippet-dialog";
+import SettingDialogueBox from "../app/(root)/_components/settings-dialoge-box";
+import LanguageSelector from "@/app/(root)/_components/language-selector";
+import useConvexUser from "@/hooks/getConvexUser";
+import RunButton from "@/app/(root)/_components/run-btn";
+import ShareButton from "./share-btn";
 
 export default function EditorPanel() {
   const clerk = useClerk();
@@ -24,6 +26,7 @@ export default function EditorPanel() {
   const theme = useEditorStore((state) => state.theme);
   const editor = useEditorStore((state) => state.editor);
   const setEditor = useEditorStore((state) => state.setEditor);
+  const convexUser = useConvexUser();
 
   useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
@@ -44,24 +47,11 @@ export default function EditorPanel() {
   if (!mounted) return null;
   return (
     <div className="relative w-full">
-      <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/5 p-4">
+      <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/5 py-4 sm:px-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 max-sm:px-4">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#1e1e2e] ring-1 ring-white/5">
-              <Image
-                src={"/" + language + ".png"}
-                alt="Logo"
-                width={24}
-                height={24}
-              />
-            </div>
-            <div>
-              <h2 className="text-sm font-medium text-white">Code Editor</h2>
-              <p className="text-xs text-gray-500">
-                Write and execute your code
-              </p>
-            </div>
+            <LanguageSelector hasAccess={convexUser.isPro} />
           </div>
           <div className="flex items-center gap-3">
             {/* Font Size Slider */}
@@ -75,19 +65,9 @@ export default function EditorPanel() {
             >
               <RotateCcwIcon className="size-4 text-gray-400" />
             </motion.button>
+            <ShareButton />
             <SettingDialogueBox />
-
-            {/* Share Button */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setIsShareDialogOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg overflow-hidden bg-linear-to-r
-               from-blue-500 to-blue-600 opacity-90 hover:opacity-100 transition-opacity"
-            >
-              <ShareIcon className="size-4 text-white" />
-              <span className="text-sm font-medium text-white ">Share</span>
-            </motion.button>
+            <RunButton />
           </div>
         </div>
 
@@ -129,9 +109,6 @@ export default function EditorPanel() {
           {!clerk.loaded && <EditorPanelSkeleton />}
         </div>
       </div>
-      {isShareDialogOpen && (
-        <ShareSnippetDialog onClose={() => setIsShareDialogOpen(false)} />
-      )}
     </div>
   );
 }

@@ -15,12 +15,14 @@ import { useState } from "react";
 import Comments from "./_components/comments";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
+import SaveButton from "@/components/save-btn";
 
 export default function SnippetsDetailsPage() {
   const { user } = useUser();
 
   const snippetId = useParams().id;
   const theme = useEditorStore((state) => state.theme);
+  const fontSize = useEditorStore((state) => state.fontSize);
 
   const [isEditable, setIsEditable] = useState<boolean | undefined>(true);
 
@@ -42,44 +44,38 @@ export default function SnippetsDetailsPage() {
   if (snippet === undefined) return <SnippetLoadingSkeleton />;
 
   return (
-    <main className="max-w-360 mx-auto px-5 py-4">
+    <main className="max-w-300 mx-auto px-5 py-4">
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-white mb-1">
+          {snippet.title}
+        </h1>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+          <div className="flex items-center gap-1 text-[#8b8b8d]">
+            <User className="w-4 h-4" />
+            <span>{snippet.userName}</span>
+          </div>
+          <div className="flex items-center gap-1 text-[#8b8b8d]">
+            <Clock className="w-4 h-4" />
+            <span>{new Date(snippet._creationTime).toLocaleDateString()}</span>
+          </div>
+          <div className="flex items-center gap-1 text-[#8b8b8d]">
+            <MessageSquare className="w-4 h-4" />
+            <span>{comments?.length} comments</span>
+          </div>
+        </div>
+      </div>
       <div className="max-w-300 mx-auto">
         {/* Code Editor */}
         <div className="mb-8 rounded-2xl overflow-hidden border border-[#ffffff0a] bg-[#121218]">
           <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#ffffff0a]">
-            <div className="flex items-center gap-2 text-[#808086]">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center size-12 rounded-xl bg-[#ffffff08] p-2.5">
-                  <Image
-                    src={`/${snippet.language}.png`}
-                    alt={`${snippet.language} logo`}
-                    height={48}
-                    width={48}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-xl font-semibold text-white mb-1">
-                    {snippet.title}
-                  </h1>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                    <div className="flex items-center gap-1 text-[#8b8b8d]">
-                      <User className="w-4 h-4" />
-                      <span>{snippet.userName}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-[#8b8b8d]">
-                      <Clock className="w-4 h-4" />
-                      <span>
-                        {new Date(snippet._creationTime).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 text-[#8b8b8d]">
-                      <MessageSquare className="w-4 h-4" />
-                      <span>{comments?.length} comments</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className=" rounded overflow-hidden">
+              <Image
+                src={`/${snippet.language}.png`}
+                alt={`${snippet.language} logo`}
+                height={32}
+                width={32}
+                className="size-8 aspect-square"
+              />
             </div>
             <div className="flex gap-3 items-center">
               <button
@@ -90,17 +86,18 @@ export default function SnippetsDetailsPage() {
                 <Edit className="size-4" />
               </button>
               <CopyBtn code={snippet.code} />
+              {!isEditable && <SaveButton />}
             </div>
           </div>
           <Editor
-            height="68vh"
+            height="56vh"
             language={LANGUAGE_CONFIG[snippet.language].monacoLanguage}
             value={snippet.code}
             theme={theme}
             beforeMount={defineMonacoThemes}
             options={{
               minimap: { enabled: false },
-              fontSize: 16,
+              fontSize,
               readOnly: isEditable,
               automaticLayout: true,
               scrollBeyondLastLine: false,

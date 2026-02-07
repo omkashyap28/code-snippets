@@ -419,7 +419,6 @@ export const THEME_DEFINITONS = {
   },
 };
 
-// Helper function to define themes in Monaco
 export const defineMonacoThemes = (monaco: Monaco) => {
   Object.entries(THEME_DEFINITONS).forEach(([themeName, themeData]) => {
     monaco.editor.defineTheme(themeName, {

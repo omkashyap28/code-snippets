@@ -43,7 +43,7 @@ export default function ShareSnippetDialog({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center h-full w-full p-4 z-9009">
       <div className="bg-[#1e1e2e] rounded-lg p-6 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-white">Share Snippet</h2>

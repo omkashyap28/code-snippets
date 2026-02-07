@@ -1,7 +1,8 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import CopyBtn from "./copy-btn";
+import CopyBtn from "../app/snippets/[id]/_components/copy-btn";
 import Image from "next/image";
+import EditBtn from "@/components/edit-btn";
 
 export default function CodeBlock({
   language,
@@ -35,7 +36,7 @@ export default function CodeBlock({
         <CopyBtn code={trimmedCode} />
       </div>
 
-      <div className="relative">
+      <div className="relative max-h-102 overflow-y-auto">
         <SyntaxHighlighter
           language={language || "plaintext"}
           style={atomOneDark}

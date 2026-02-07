@@ -49,9 +49,9 @@ export default function LanguageSelector({
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => setIsOpen(!isOpen)}
-        className={`group relative flex items-center gap-3 px-2 py-2.5 bg-[#1e1e2e]/80 
+        className={`group relative flex items-center gap-3 px-2 py-2 bg-transparent 
        rounded-lg transition-all 
-        duration-200 border border-gray-800/50 hover:border-gray-700
+        duration-200 border border-transparent hover:border-gray-700
         ${!hasAccess && language !== "javascript" ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         <div
@@ -69,7 +69,7 @@ export default function LanguageSelector({
           />
         </div>
 
-        <span className="text-gray-200 min-w-20 text-left group-hover:text-white transition-colors">
+        <span className="max-sm:hidden text-gray-200 min-w-fit text-left group-hover:text-white transition-colors">
           {currentLanguageObj.label}
         </span>
 

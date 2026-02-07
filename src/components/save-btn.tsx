@@ -1,29 +1,15 @@
 "use client";
 
-import { getExecutionResult, useEditorStore } from "@/store/useEditorStore";
-import { useUser } from "@clerk/nextjs";
-import { useMutation } from "convex/react";
-import { Loader2, Play } from "lucide-react";
 import { motion } from "motion/react";
-import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../convex/_generated/dataModel";
+import { Loader2, SaveIcon } from "lucide-react";
+import { useState } from "react";
 
-export default function RunButton() {
-  const { user } = useUser();
-  const runCode = useEditorStore((state) => state.runCode);
-  const language = useEditorStore((state) => state.language);
-  const isRunning = useEditorStore((state) => state.isRunning);
-  const saveExecution = useMutation(api.codeExecutions.saveExecution);
-  const handleRun = async () => {
-    await runCode();
-    const result = getExecutionResult();
-    if (user && result) {
-      await saveExecution({
-        language,
-        code: result.code,
-        output: result.output || undefined,
-        error: result.error || undefined,
-      });
-    }
+export default function SaveButton() {
+  const [isRunning, setIsRunning] = useState(false);
+
+  const handleRun = () => {
+    setIsRunning(true);
   };
 
   return (
@@ -33,10 +19,10 @@ export default function RunButton() {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`
-        group relative inline-flex items-center gap-2.5 py-2 px-2.5 sm:px-3.5 sm:py-2.5
-        disabled:cursor-not-allowed
-        focus:outline-none
-      `}
+            group relative inline-flex items-center gap-2.5 py-2 px-2.5 sm:px-3.5 sm:py-2.5
+            disabled:cursor-not-allowed
+            focus:outline-none
+          `}
     >
       {/* bg wit gradient */}
       <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-blue-500 rounded-lg opacity-100 transition-opacity group-hover:opacity-90" />
@@ -55,7 +41,7 @@ export default function RunButton() {
         ) : (
           <>
             <div className="relative flex items-center justify-center w-4 h-4">
-              <Play className="w-4 h-4 text-white/90 transition-transform group-hover:scale-110 group-hover:text-white" />
+              <SaveIcon className="w-4 h-4 text-white/90 transition-transform group-hover:scale-110 group-hover:text-white" />
             </div>
             <span className="max-sm:hidden text-sm font-medium text-white/90 group-hover:text-white">
               Run Code

@@ -1,12 +1,20 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "../../../convex/_generated/api";
-import MainHeader from "@/components/main-header";
 import SnippetSkeleton from "./_components/snippets-skeleton";
 import { AnimatePresence, motion } from "motion/react";
-import { BookOpen, Code, Grid, Rows, Search, Tags, X } from "lucide-react";
+import {
+  BookOpen,
+  Code,
+  Command,
+  Grid,
+  Rows,
+  Search,
+  Tags,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import SnippetCard from "./_components/snippet-card";
 
@@ -16,10 +24,26 @@ export default function Snippets() {
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "rows">("grid");
 
+  function handleKeyDown(e: KeyboardEvent): void {
+    console.log(e.key);
+    if ((e.key === "k" || e.key === "K") && e.ctrlKey) {
+      e.preventDefault();
+      document.getElementById("search-input")?.focus();
+    }
+    if (e.key === "Escape") {
+      document.getElementById("search-input")?.blur();
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   if (snippets === undefined) {
     return (
       <div className="h-screen">
-        <MainHeader />
         <SnippetSkeleton />
       </div>
     );
@@ -41,7 +65,7 @@ export default function Snippets() {
   });
 
   return (
-    <div className="relative max-w-7xl mx-auto px-4 py-12">
+    <div className="relative  py-12">
       {/* Hero */}
       <div className="text-center max-w-3xl mx-auto mb-16">
         <motion.div
@@ -77,16 +101,22 @@ export default function Snippets() {
         <div className="relative group">
           <div className="absolute inset-0 bg-linear-to-r from-blue-500/20 to-purple-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
           <div className="relative flex items-center">
-            <Search className="absolute left-4 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-4 size-5 text-gray-400" />
             <input
               type="text"
+              id="search-input"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              autoComplete="off"
               placeholder="Search snippets by title, language, or author..."
-              className="w-full pl-12 pr-4 py-4 bg-[#1e1e2e]/80 hover:bg-[#1e1e2e] text-white
-                  rounded-xl border border-[#313244] hover:border-[#414155] transition-all duration-200
-                  placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="w-full pl-12 pr-4 py-4 bg-[#1e1e2e]/80 hover:bg-[#1e1e2e] text-white rounded-xl border border-[#313244] hover:border-[#414155] transition-all duration-200 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             />
+            <div className="absolute right-4 text-gray-400 px-1 py-0.5 bg-gray-800/70 rounded">
+              <span className="flex items-center gap-1">
+                <Command className="size-4" />+{" "}
+                <span className="text-[16px]">k</span>
+              </span>
+            </div>
           </div>
         </div>
 

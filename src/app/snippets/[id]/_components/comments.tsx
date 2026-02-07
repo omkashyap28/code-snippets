@@ -57,7 +57,7 @@ export default function Comments({ snippetId }: { snippetId: Id<"snippets"> }) {
         </h2>
       </div>
 
-      <div className="p-6 sm:p-8">
+      <div className="py-4 px-3">
         {user ? (
           <CommentForm
             onSubmit={handleSubmitComment}
