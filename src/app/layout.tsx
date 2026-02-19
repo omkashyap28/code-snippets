@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { dark } from "@clerk/themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import ConvexClientProvider from "@/components/provider/convex-provider";
 import { Toaster } from "react-hot-toast";
@@ -27,7 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        theme: dark,
+      }}
+    >
       <ConvexClientProvider>
         <html lang="en">
           <body

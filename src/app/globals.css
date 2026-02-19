@@ -29,6 +29,10 @@ button {
   cursor: pointer;
 }
 
+.cl-footer {
+  display: none;
+}
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
