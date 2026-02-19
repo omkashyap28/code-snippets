@@ -13,7 +13,7 @@ export default function Navbar() {
           label="Snippets"
         />
         <NavItem
-          href="https://github.com"
+          href="https://github.com/omkashyap28/code-snippets"
           icon={<Github className="w-4 h-4" />}
           label="Github"
         />
