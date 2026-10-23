@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Id } from "../../convex/_generated/dataModel";
 import { Loader2, SaveIcon } from "lucide-react";
 import { useState } from "react";
 

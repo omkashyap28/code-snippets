@@ -13,6 +13,7 @@ import LanguageSelector from "@/app/(root)/_components/language-selector";
 import useConvexUser from "@/hooks/getConvexUser";
 import RunButton from "@/app/(root)/_components/run-btn";
 import ShareButton from "./share-btn";
+import SaveButton from "./save-execution-btn";
 
 export default function EditorPanel({
   setActive,
@@ -66,7 +67,7 @@ export default function EditorPanel({
             >
               <RotateCcwIcon className="size-4 text-gray-400" />
             </motion.button>
-
+            <SaveButton />
             <ShareButton />
             <SettingDialogueBox />
             <RunButton setActive={setActive} />
